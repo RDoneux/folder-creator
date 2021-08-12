@@ -12,7 +12,7 @@ import org.json.simple.parser.ParseException;
 public class UserParser {
 
     public UserParser() {
-        //EMPTY
+        // EMPTY
     }
 
     public User search(String username) throws FileNotFoundException, IOException, ParseException {

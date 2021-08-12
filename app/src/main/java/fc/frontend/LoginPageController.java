@@ -2,6 +2,7 @@ package fc.frontend;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -14,7 +15,10 @@ public class LoginPageController {
     private PasswordField password;
 
     @FXML
-    private Button loginbutton;
+    private Button loginButton;
+
+    @FXML
+    private Label error;
 
     @FXML
     private void handleLogin() {
@@ -24,12 +28,11 @@ public class LoginPageController {
 
             if (user != null) {
                 if (user.getPassword().equals(password.getText())) {
-                    System.out.println("login successfull");
+                    Client.changeScene("main-page");
                     return;
                 }
             }
-            System.out.println("login unsuccessfull");
-
+            error.setOpacity(1);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

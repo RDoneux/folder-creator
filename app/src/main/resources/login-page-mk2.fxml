@@ -114,7 +114,7 @@
             <Insets bottom="20.0" />
          </GridPane.margin>
       </ImageView>
-      <Label fx:id="error" opacity="0.0" text="Username or password not recognised" textFill="RED" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
+      <Label fx:id="error" opacity="0.0" text="Username or login not recognised" textFill="RED" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
          <font>
             <Font size="16.0" />
          </font>
