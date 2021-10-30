@@ -67,5 +67,4 @@ public class FolderGeneratorTest {
         assertTrue(folderGenerator.create(RECOGNISED_COURSE_TITLE, RECOGNISED_COURSE_DATE, RECOGNISED_CANDIDATE_LIST));
     }
 
-
 }

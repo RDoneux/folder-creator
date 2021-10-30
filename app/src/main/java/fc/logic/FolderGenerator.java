@@ -11,12 +11,22 @@ import javafx.collections.ObservableList;
 public class FolderGenerator {
 
     private final Logger log = Logger.getLogger(FolderGenerator.class.getName());
-    Dotenv dotenv = Dotenv.load();
+    private final Dotenv dotenv = Dotenv.load();
 
     public boolean create(String courseType, String courseDate, ObservableList<String> candidates) {
 
-        System.out.println(dotenv.get("TEST_VARIABLE"));
+        if (!errorCheckInputs(courseType, courseDate, candidates)) {
+            return false;
+        }
 
+        if (!createFileStructure(courseType, courseDate, candidates)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean errorCheckInputs(String courseType, String courseDate, ObservableList<String> candidates) {
         if (courseType == null
                 || (!courseType.equals("Introductory & Foundation") && !courseType.equals("Instructor Course")
                         && !courseType.equals("Re-certification") && !courseType.equals("Assessment Day"))) {
@@ -33,10 +43,13 @@ public class FolderGenerator {
             log.log(Level.SEVERE, "Course Date cannot be empty");
             return false;
         }
+        return true;
+    }
 
-        File source = new File(File.separator + "home" + File.separator + "robert" + File.separator + "Desktop"
-                + File.separator + "File Creator" + File.separator + getDateValue(courseDate, "year") + File.separator
-                + getDateValue(courseDate, "month"));
+    private boolean createFileStructure(String courseType, String courseDate, ObservableList<String> candidates) {
+        String parsedCourseDate = parseDateValue(courseDate);
+        File source = new File(parseFilePath(dotenv.get("ROOT_PATH")) + getDateValue(parsedCourseDate, "year")
+                + File.separator + getDateValue(parsedCourseDate, "month"));
 
         if (!source.exists()) {
             log.log(Level.INFO, "No Source Directory. Creating new Source Directory...");
@@ -48,8 +61,7 @@ public class FolderGenerator {
             }
         }
 
-        File course = new File(
-                source.getAbsolutePath() + File.separator + courseDate.replace("/", ".") + "~" + courseType);
+        File course = new File(source.getAbsolutePath() + File.separator + parsedCourseDate + "~" + courseType);
 
         if (!course.exists()) {
             log.log(Level.INFO, "No pre-existing course detected. Creating new course...");
@@ -66,34 +78,45 @@ public class FolderGenerator {
             File candidateFile = new File(course.getAbsolutePath() + File.separator + candidate);
             if (!candidateFile.exists()) {
                 if (candidateFile.mkdirs()) {
-                    log.log(Level.INFO, "Creating candidate folder: " + candidate);
+                    log.log(Level.INFO, "Candidate folder: '" + candidate + "' created");
                 } else {
-                    log.log(Level.SEVERE, "Error creating candiates");
+                    log.log(Level.SEVERE, "Error creating candiate " + candidate);
                     return false;
                 }
             }
-            // copy requested files to
+            if (!copyRequiredFiles(candidateFile, courseType)) {
+                return false;
+            }
         }
+        return true;
+    }
 
+    private boolean copyRequiredFiles(File candidateFile, String courseType) {
+        // create appropriate file structures based upon course type
         return true;
     }
 
     private String getDateValue(String date, String value) {
+        System.out.println(date);
         switch (value) {
         case "year":
-            return date.split("/")[2];
+            return date.split("-")[0];
         case "month":
-            return new DateFormatSymbols().getMonths()[Integer.valueOf(date.split("/")[1]) - 1];
+            return new DateFormatSymbols().getMonths()[Integer.valueOf(date.split("-")[1]) - 1];
         case "day":
-            return date.split("/")[0];
+            return date.split("-")[2];
         default:
             throw new IllegalArgumentException(
                     "date value not recognised. Must be 'year', 'month', 'day'. Value: " + value);
         }
     }
 
+    private String parseDateValue(String dateValue) {
+        return dateValue.replaceAll("/", "-");
+    }
+
     private String parseFilePath(String rawFilePath) {
-        return rawFilePath.replace("/", File.separator);
+        return rawFilePath.replaceAll("[/.\\\\]", File.separator);
     }
 
 }
