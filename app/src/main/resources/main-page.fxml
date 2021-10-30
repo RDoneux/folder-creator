@@ -48,7 +48,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="700.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16" fx:controller="fc.frontend.MainPageController">
+<GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fc.frontend.MainPageController">
   <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="452.0" minWidth="10.0" prefWidth="263.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="245.0" minWidth="0.0" prefWidth="204.0" />
@@ -89,7 +89,7 @@
                </GridPane.margin>
             </Button>
             <ProgressIndicator opacity="0.0" progress="0.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" />
-            <Button fx:id="createFoldersButton" mnemonicParsing="false" text="Create Folders" GridPane.columnIndex="4">
+            <Button fx:id="createFoldersButton" mnemonicParsing="false" onAction="#handleCreateFoldersButtonPress" text="Create Folders" GridPane.columnIndex="4">
                <font>
                   <Font size="15.0" />
                </font>

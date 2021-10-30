@@ -25,12 +25,18 @@ repositories {
 dependencies {
     // Use JUnit test framework.
     testImplementation 'junit:junit:4.13.1'
+    testImplementation('org.junit.jupiter:junit-jupiter:5.6.2')
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:30.0-jre'
 
     // https://mvnrepository.com/artifact/org.json/json
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+    // https://mvnrepository.com/artifact/io.github.cdimascio/java-dotenv
+    // For environment variables setup
+    implementation group: 'io.github.cdimascio', name: 'java-dotenv', version: '5.2.2'
+
 }
 
 application {
