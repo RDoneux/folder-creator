@@ -18,7 +18,7 @@ public class FolderGeneratorTest {
     private static final ObservableList<String> UNRECOGNISED_CANDIDATE_LIST = FXCollections.observableArrayList();
 
     private static final String RECOGNISED_COURSE_TITLE = "Introductory & Foundation";
-    private static final String RECOGNISED_COURSE_DATE = "01/01/1991";
+    private static final String RECOGNISED_COURSE_DATE = "1991/01/01";
     private static final ObservableList<String> RECOGNISED_CANDIDATE_LIST = FXCollections.observableArrayList();
 
     @BeforeAll

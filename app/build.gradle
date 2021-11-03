@@ -36,6 +36,9 @@ dependencies {
     // https://mvnrepository.com/artifact/io.github.cdimascio/java-dotenv
     // For environment variables setup
     implementation group: 'io.github.cdimascio', name: 'java-dotenv', version: '5.2.2'
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+
 
 }
 

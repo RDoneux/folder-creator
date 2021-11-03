@@ -31,6 +31,7 @@ public class SceneManager {
             }
         }
         log.info(sceneLocations.length + " scenes loaded");
+
     }
 
     private String stripUrl(String url) {

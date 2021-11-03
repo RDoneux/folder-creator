@@ -7,13 +7,20 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
 import fc.logic.FolderGenerator;
 import javafx.collections.FXCollections;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class MainPageController {
+
+    private Logger log = Logger.getLogger(MainPageController.class.getName());
 
     @FXML
     private TextField candidateName;
@@ -23,9 +30,17 @@ public class MainPageController {
 
     @FXML
     private TextFlow textFlow;
+    public static DebugConsole debugConsole;
 
     @FXML
     private ListView<String> listViewer;
+
+    @FXML
+    private ListView<ImageView> editColumn;
+
+    @FXML
+    private ListView<ImageView> deleteColumn;
+    private CandidateViewer candidateViewer;
 
     @FXML
     private Button createFoldersButton;
@@ -42,6 +57,9 @@ public class MainPageController {
         courses = FXCollections.observableArrayList("Introductory & Foundation", "Instructor Course", "Assessment Day",
                 "Re-certification");
         courseSelector.setItems(courses);
+        debugConsole = new DebugConsole(textFlow);
+        candidateViewer = new CandidateViewer(listViewer, editColumn, deleteColumn);
+
     }
 
     @FXML
@@ -58,14 +76,51 @@ public class MainPageController {
 
     @FXML
     public void handleCreateFoldersButtonPress() {
+        if (courseSelector == null || courseSelector.getValue() == null) {
+            log.log(Level.SEVERE, "Course type not specified.");
+            MainPageController.debugConsole.addText("Course type not specified", Color.RED);
+            MainPageController.debugConsole.lineBreak();
+            MainPageController.debugConsole.addText("Please specify the type of course that is scheduled", Color.RED);
+            MainPageController.debugConsole.lineBreak();
+            return;
+        }
+        if (datePicker == null || datePicker.getValue() == null) {
+            log.log(Level.SEVERE, "Course date not specified.");
+            MainPageController.debugConsole.addText("Course date not specified", Color.RED);
+            MainPageController.debugConsole.lineBreak();
+            MainPageController.debugConsole.addText("Please specify the start date of the course that is scheduled",
+                    Color.RED);
+            MainPageController.debugConsole.lineBreak();
+            return;
+        }
+        if (listViewer == null || listViewer.getItems() == null) {
+            log.log(Level.SEVERE, "No candidates identified");
+            MainPageController.debugConsole.addText("No candidates identified.", Color.RED);
+            MainPageController.debugConsole.lineBreak();
+            MainPageController.debugConsole.addText("Please specify at least one candidate for this course", Color.RED);
+            MainPageController.debugConsole.lineBreak();
+            return;
+        }
         new FolderGenerator().create(courseSelector.getValue(), datePicker.getValue().toString(),
                 listViewer.getItems());
     }
 
+    @FXML
+    public void deleteCandidate() {
+        candidateViewer.deleteCandidate();
+    }
+
     private void addCandidate() {
-        if (!candidateName.getText().isEmpty() && !listViewer.getItems().contains(candidateName.getText())) {
-            listViewer.getItems().add(candidateName.getText());
-            candidateName.setText("");
+        if (candidateName.getText().isEmpty()) {
+            MainPageController.debugConsole.addText("Candidate name cannot be null", Color.RED);
+            return;
         }
+        if (listViewer.getItems().contains(candidateName.getText())) {
+            MainPageController.debugConsole.addText("Candidate has already been added to course. Skipping...", Color.ORANGE);
+            candidateName.setText("");
+            return;
+        }
+        candidateViewer.addCandidate(candidateName.getText());
+        candidateName.setText("");
     }
 }
