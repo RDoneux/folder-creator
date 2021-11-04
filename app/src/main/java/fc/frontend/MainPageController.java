@@ -58,7 +58,7 @@ public class MainPageController {
                 "Re-certification");
         courseSelector.setItems(courses);
         debugConsole = new DebugConsole(textFlow);
-        candidateViewer = new CandidateViewer(listViewer, editColumn, deleteColumn);
+        candidateViewer = new CandidateViewer(listViewer, deleteColumn);
 
     }
 
