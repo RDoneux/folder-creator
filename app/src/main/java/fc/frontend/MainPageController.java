@@ -7,7 +7,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -36,10 +35,7 @@ public class MainPageController {
     private ListView<String> listViewer;
 
     @FXML
-    private ListView<ImageView> editColumn;
-
-    @FXML
-    private ListView<ImageView> deleteColumn;
+    private ListView<DeleteIcon> deleteColumn;
     private CandidateViewer candidateViewer;
 
     @FXML
@@ -59,7 +55,6 @@ public class MainPageController {
         courseSelector.setItems(courses);
         debugConsole = new DebugConsole(textFlow);
         candidateViewer = new CandidateViewer(listViewer, deleteColumn);
-
     }
 
     @FXML
@@ -103,6 +98,7 @@ public class MainPageController {
         }
         new FolderGenerator().create(courseSelector.getValue(), datePicker.getValue().toString(),
                 listViewer.getItems());
+        listViewer.getItems().clear();
     }
 
     @FXML
@@ -116,7 +112,8 @@ public class MainPageController {
             return;
         }
         if (listViewer.getItems().contains(candidateName.getText())) {
-            MainPageController.debugConsole.addText("Candidate has already been added to course. Skipping...", Color.ORANGE);
+            MainPageController.debugConsole.addText("Candidate has already been added to course. Skipping...",
+                    Color.ORANGE);
             candidateName.setText("");
             return;
         }
