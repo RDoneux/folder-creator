@@ -13,7 +13,7 @@ public class Client extends Application {
 
     private void loadScenes() {
         sceneManager = new SceneManager();
-        sceneManager.loadScenes(new String[] { "/login-page.fxml", "/main-page.fxml" });
+        sceneManager.loadScenes(new String[] { "/login-page.fxml", "/main-page.fxml", "/settings-page.fxml" });
     }
 
     public static void changeScene(String key) {

@@ -58,6 +58,11 @@ public class MainPageController {
     }
 
     @FXML
+    public void handleLogoClick() {
+        Client.changeScene("settings-page");
+    }
+
+    @FXML
     public void handleAddCandidateButtonPress() {
         addCandidate();
     }
@@ -99,6 +104,7 @@ public class MainPageController {
         new FolderGenerator().create(courseSelector.getValue(), datePicker.getValue().toString(),
                 listViewer.getItems());
         listViewer.getItems().clear();
+        deleteColumn.getItems().clear();
     }
 
     @FXML

@@ -118,7 +118,7 @@
             <DatePicker fx:id="datePicker" prefHeight="30.0" prefWidth="152.0" promptText="Selecte date" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <ImageView fitHeight="81.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+      <ImageView fx:id="logo" fitHeight="81.0" fitWidth="219.0" onMouseClicked="#handleLogoClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="TOP">
          <image>
             <Image url="@images/header-image.png" />
          </image>
