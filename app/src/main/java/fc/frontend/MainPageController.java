@@ -17,9 +17,12 @@ import javafx.collections.FXCollections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class MainPageController {
 
     private Logger log = Logger.getLogger(MainPageController.class.getName());
+    private final Dotenv dotenv = Dotenv.load();
 
     @FXML
     private TextField candidateName;
@@ -50,8 +53,7 @@ public class MainPageController {
 
     @FXML
     public void initialize() {
-        courses = FXCollections.observableArrayList("Introductory & Foundation", "Instructor Course", "Assessment Day",
-                "Re-certification");
+        courses = FXCollections.observableArrayList(dotenv.get("COURSES").split(","));
         courseSelector.setItems(courses);
         debugConsole = new DebugConsole(textFlow);
         candidateViewer = new CandidateViewer(listViewer, deleteColumn);
