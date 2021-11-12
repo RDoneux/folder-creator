@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import fc.logic.Utils;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class SettingsPageController {
@@ -81,8 +82,8 @@ public class SettingsPageController {
     public void handleCourseTypeChange() {
         JSONObject jsonFile;
         try {
-            jsonFile = (JSONObject) new JSONParser()
-                    .parse(new FileReader(System.getProperty("user.dir") + File.separator + "settings.json"));
+            jsonFile = (JSONObject) new JSONParser().parse(
+                    new FileReader(System.getProperty("user.dir") + Utils.parseFilePath(dotenv.get("SETTINGS_PATH"))));
             JSONObject courseTypeJSON = (JSONObject) jsonFile.get(courseType.getValue());
 
             issuesArrisingForm.setSelected(Boolean.parseBoolean(courseTypeJSON.get("issues arrising form").toString()));
@@ -110,11 +111,10 @@ public class SettingsPageController {
     @FXML
     @SuppressWarnings("unchecked")
     public void handleStateChange() {
-        System.out.println("called");
         JSONObject jsonFile;
         try {
-            jsonFile = (JSONObject) new JSONParser()
-                    .parse(new FileReader(System.getProperty("user.dir") + File.separator + "settings.json"));
+            jsonFile = (JSONObject) new JSONParser().parse(
+                    new FileReader(System.getProperty("user.dir") + Utils.parseFilePath(dotenv.get("SETTINGS_PATH"))));
             JSONObject courseTypeJSON = (JSONObject) jsonFile.get(courseType.getValue());
 
             courseTypeJSON.put("issues arrising form", issuesArrisingForm.isSelected());
@@ -123,12 +123,10 @@ public class SettingsPageController {
             courseTypeJSON.put("presentation folder", presentationsFolder.isSelected());
             courseTypeJSON.put("candidate record sheet", candidateRecordSheet.isSelected());
             courseTypeJSON.put("abi three random", abiThreeRandom.isSelected());
-            courseTypeJSON.put("abi proactive working practices",
-                    abiProactiveWorkingPractices.isSelected());
+            courseTypeJSON.put("abi proactive working practices", abiProactiveWorkingPractices.isSelected());
             courseTypeJSON.put("abi keeping safe", abiKeepingSafe.isSelected());
             courseTypeJSON.put("abi person specific", abiPersonSpecific.isSelected());
-            courseTypeJSON.put("abi restrictive person specific",
-                    abiRestrictivePersonSpecific.isSelected());
+            courseTypeJSON.put("abi restrictive person specific", abiRestrictivePersonSpecific.isSelected());
             courseTypeJSON.put("presentation feedback", presentationFeedback.isSelected());
             courseTypeJSON.put("first course programme", firstCourseProgrammeFeedback.isSelected());
 

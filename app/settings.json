@@ -1,14 +1,14 @@
 {
   "Assessment Day": {
-    "abi proactive working practices": true,
+    "abi proactive working practices": false,
     "abi three random": true,
     "issues arrising form": true,
     "presentation feedback": true,
     "first course programme": true,
     "abi restrictive person specific": true,
     "attendance sheet": true,
-    "candidate record sheet": true,
-    "abi person specific": true,
+    "candidate record sheet": false,
+    "abi person specific": false,
     "abi keeping safe": true,
     "evaluation form": true,
     "presentation folder": true

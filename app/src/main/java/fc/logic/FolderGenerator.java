@@ -1,12 +1,16 @@
 package fc.logic;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import fc.frontend.MainPageController;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -17,8 +21,17 @@ public class FolderGenerator {
 
     private final Logger log = Logger.getLogger(FolderGenerator.class.getName());
     private final Dotenv dotenv = Dotenv.load();
+    private JSONObject settings;
 
     public boolean create(String courseType, String courseDate, ObservableList<String> candidates) {
+
+        try {
+            JSONObject object = (JSONObject) new JSONParser().parse(
+                    new FileReader(System.getProperty("user.dir") + Utils.parseFilePath(dotenv.get("SETTINGS_PATH"))));
+            settings = (JSONObject) object.get(courseType);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
 
         if (!errorCheckInputs(courseType, courseDate, candidates)) {
             return false;
@@ -56,7 +69,7 @@ public class FolderGenerator {
 
     private boolean createFileStructure(String courseType, String courseDate, ObservableList<String> candidates) {
         String parsedCourseDate = parseDateValue(courseDate);
-        File source = new File(parseFilePath(dotenv.get("ROOT_PATH")) + getDateValue(parsedCourseDate, "year")
+        File source = new File(Utils.parseFilePath(dotenv.get("ROOT_PATH")) + getDateValue(parsedCourseDate, "year")
                 + File.separator + getDateValue(parsedCourseDate, "month"));
 
         if (!source.exists()) {
@@ -150,10 +163,22 @@ public class FolderGenerator {
         log.log(Level.INFO, "Copying general documents");
         MainPageController.debugConsole.addText("Copying general documents", Color.BLACK);
         MainPageController.debugConsole.lineBreak();
+
         try {
-            copyFile("forms/general/Attendance Sheet.docx", courseFile.getAbsolutePath(), "Attendance Sheet.docx");
-            copyFile("forms/general/Issues Arising Form.docx", courseFile.getAbsolutePath(),
-                    "Issues Arising Form.docx");
+            if (getSetting("issues arrising form")) {
+                copyFile("forms/general/Issues Arising Form.docx", courseFile.getAbsolutePath(),
+                        "Issues Arrising.docx");
+            }
+            if (getSetting("attendance sheet")) {
+                copyFile("forms/general/Attendance Sheet.docx", courseFile.getAbsolutePath(), "Attendance Sheet.docx");
+            }
+            if (getSetting("evaluation form")) {
+                //copyFile("forms/general/Evaluation Form.docx", courseFile.getAbsolutePath(), "Evaluation Form.docx");
+            }
+            if (getSetting("presentation folder")) {
+                new File(courseFile.getAbsolutePath() + File.separator + "presentations").mkdirs();
+            }
+
         } catch (IOException e) {
             log.log(Level.SEVERE, "Error creating general documents caused by " + e.getLocalizedMessage());
             MainPageController.debugConsole
@@ -161,6 +186,11 @@ public class FolderGenerator {
             return false;
         }
         return true;
+    }
+
+    private Boolean getSetting(String setting) {
+        System.out.println(setting);
+        return Boolean.parseBoolean(settings.get(setting).toString());
     }
 
     private void copyFile(String source, String destination, String fileName) throws IOException {
@@ -185,10 +215,6 @@ public class FolderGenerator {
     private String parseDateValue(String dateValue) {
         String normalisedDateValue[] = dateValue.replaceAll("/", "-").split("-");
         return normalisedDateValue[2] + "-" + normalisedDateValue[1] + "-" + normalisedDateValue[0];
-    }
-
-    private String parseFilePath(String rawFilePath) {
-        return rawFilePath.replaceAll("[/.\\\\]", File.separator);
     }
 
 }
