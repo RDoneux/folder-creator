@@ -66,6 +66,8 @@ public class SettingsPageController {
     public void initialize() {
         courses = FXCollections.observableArrayList(dotenv.get("COURSES").split(","));
         courseType.setItems(courses);
+        courseType.getSelectionModel().select(0);
+        handleCourseTypeChange();
     }
 
     @FXML

@@ -120,7 +120,8 @@ public class MainPageController {
             return;
         }
         if (listViewer.getItems().contains(candidateName.getText())) {
-            MainPageController.debugConsole.addText("Candidate has already been added to course. Skipping...",
+            MainPageController.debugConsole.addText(
+                    "Candidate '" + candidateName.getText() + "' has already been added to course. Skipping...",
                     Color.ORANGE);
             candidateName.setText("");
             return;

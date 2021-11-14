@@ -68,7 +68,7 @@ public class FolderGenerator {
     }
 
     private boolean createFileStructure(String courseType, String courseDate, ObservableList<String> candidates) {
-        String parsedCourseDate = parseDateValue(courseDate);
+        String parsedCourseDate = Utils.parseDateValue(courseDate);
         File source = new File(Utils.parseFilePath(dotenv.get("ROOT_PATH")) + getDateValue(parsedCourseDate, "year")
                 + File.separator + getDateValue(parsedCourseDate, "month"));
 
@@ -137,19 +137,53 @@ public class FolderGenerator {
             }
         }
         final Integer candidateSize = candidates.size() - skipped;
-        log.log(Level.INFO, candidateSize + " new folder" + (candidateSize > 1 ? "s" : "") + " created successfully");
-        log.log(Level.INFO, skipped + " folder " + (skipped > 1 ? "s" : "") + "skipped.");
+        log.log(Level.INFO, candidateSize + " new folder" + (candidateSize != 1 ? "s" : "") + " created successfully.");
+        log.log(Level.INFO, skipped + " folder " + (skipped != 1 ? "s" : "") + "skipped.");
         MainPageController.debugConsole.lineBreak();
         MainPageController.debugConsole.addText(
-                candidateSize + " new folder" + (candidateSize > 1 ? "s" : "") + " created successfully", Color.GREEN);
-        MainPageController.debugConsole.addText(skipped + " folder" + (skipped > 1 ? "s" : "") + " skipped.");
+                candidateSize + " new folder" + (candidateSize != 1 ? "s" : "") + " created successfully", Color.GREEN);
+        MainPageController.debugConsole.addText(skipped + " folder" + (skipped != 1 ? "s" : "") + " skipped.",
+                Color.ORANGE);
         return true;
     }
 
     private boolean copyCandidateFiles(File candidateFile, String courseType) {
         try {
-            copyFile("forms/record/General - Record Sheet V1.docx", candidateFile.getAbsolutePath(),
-                    candidateFile.getName() + "~Record Sheet" + ".docx");
+            if (getSetting("candidate record sheet")) {
+                copyFile("forms/record/General - Record Sheet.docx", candidateFile.getAbsolutePath(),
+                        candidateFile.getName() + " ~ Record Sheet" + ".docx");
+            }
+            if (getSetting("presentation feedback")) {
+                copyFile("forms/record/" + courseType + " - Presentation Feedback.docx",
+                        candidateFile.getAbsolutePath(), candidateFile.getName() + " ~ Presentation Feedback.docx");
+                if (courseType.equals("Instructor Course")) {
+                    // add in presentation feedback day 4
+                }
+            }
+            if (getSetting("first course programme")) {
+                copyFile("forms/record/First Course Feedback.docx", candidateFile.getAbsolutePath(),
+                        candidateFile.getName() + " ~ First Course Feedback.docx");
+            }
+            if (getSetting("abi three random")) {
+                copyFile("forms/record/abi" + Utils.getRandom(0, 5) + ".docx", candidateFile.getAbsolutePath(),
+                        "Audit-based intervention Assessment Form");
+            }
+            if (getSetting("abi proactive working practices")) {
+                copyFile("forms/record/General - Physical Intervention Records PWP.docx",
+                        candidateFile.getAbsolutePath(), "Audit-based Interventions PWP.docx");
+            }
+            if (getSetting("abi proactive working practices")) {
+                copyFile("forms/record/General - Physical Intervention Records KS.docx",
+                        candidateFile.getAbsolutePath(), "Audit-based Interventions KS.docx");
+            }
+            if (getSetting("abi proactive working practices")) {
+                copyFile("forms/record/General - Physical Intervention Records PS.docx",
+                        candidateFile.getAbsolutePath(), "Audit-based Interventions PS.docx");
+            }
+            if (getSetting("abi proactive working practices")) {
+                copyFile("forms/record/General - Physical Intervention Records RPS.docx",
+                        candidateFile.getAbsolutePath(), "Audit-based Interventions RPS.docx");
+            }
 
         } catch (IOException e) {
             log.log(Level.SEVERE, e.getMessage() + "' because: " + e.getMessage());
@@ -167,16 +201,17 @@ public class FolderGenerator {
         try {
             if (getSetting("issues arrising form")) {
                 copyFile("forms/general/Issues Arising Form.docx", courseFile.getAbsolutePath(),
-                        "Issues Arrising.docx");
+                        "Issues Arrising Form.docx");
             }
             if (getSetting("attendance sheet")) {
                 copyFile("forms/general/Attendance Sheet.docx", courseFile.getAbsolutePath(), "Attendance Sheet.docx");
             }
             if (getSetting("evaluation form")) {
-                //copyFile("forms/general/Evaluation Form.docx", courseFile.getAbsolutePath(), "Evaluation Form.docx");
+                copyFile("forms/general/Evaluation Form.docx", courseFile.getAbsolutePath(),
+                        "Evaluation Collation Form.docx");
             }
             if (getSetting("presentation folder")) {
-                new File(courseFile.getAbsolutePath() + File.separator + "presentations").mkdirs();
+                new File(courseFile.getAbsolutePath() + File.separator + "0. presentations").mkdirs();
             }
 
         } catch (IOException e) {
@@ -210,11 +245,6 @@ public class FolderGenerator {
             throw new IllegalArgumentException(
                     "date value not recognised. Must be 'year', 'month', 'day'. Value: " + value);
         }
-    }
-
-    private String parseDateValue(String dateValue) {
-        String normalisedDateValue[] = dateValue.replaceAll("/", "-").split("-");
-        return normalisedDateValue[2] + "-" + normalisedDateValue[1] + "-" + normalisedDateValue[0];
     }
 
 }
