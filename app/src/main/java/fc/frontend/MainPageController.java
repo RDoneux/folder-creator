@@ -32,7 +32,7 @@ public class MainPageController {
 
     @FXML
     private TextFlow textFlow;
-    public static DebugConsole debugConsole;
+    private static DebugConsole debugConsole;
 
     @FXML
     private ListView<String> listViewer;
@@ -114,6 +114,21 @@ public class MainPageController {
         candidateViewer.deleteCandidate();
     }
 
+    public static void log(String text) {
+        if (debugConsole != null)
+            debugConsole.addText(text);
+    }
+
+    public static void log(String text, Color colour) {
+        if (debugConsole != null)
+            debugConsole.addText(text, colour);
+    }
+
+    public static void logLineBreak() {
+        if (debugConsole != null)
+            debugConsole.lineBreak();
+    }
+
     private void addCandidate() {
         if (candidateName.getText().isEmpty()) {
             MainPageController.debugConsole.addText("Candidate name cannot be null", Color.RED);
@@ -129,4 +144,5 @@ public class MainPageController {
         candidateViewer.addCandidate(candidateName.getText());
         candidateName.setText("");
     }
+
 }

@@ -27,6 +27,7 @@ public class FolderGeneratorTest {
 
         RECOGNISED_CANDIDATE_LIST.add("recognised-candidate-name-one");
         RECOGNISED_CANDIDATE_LIST.add("recognised-candidate-name-two");
+
     }
 
     @Test

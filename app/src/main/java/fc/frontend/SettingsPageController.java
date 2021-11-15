@@ -71,11 +71,6 @@ public class SettingsPageController {
     }
 
     @FXML
-    public void handleSaveButtonPress() {
-
-    }
-
-    @FXML
     public void handleReturnButtonPress() {
         Client.changeScene("main-page");
     }
