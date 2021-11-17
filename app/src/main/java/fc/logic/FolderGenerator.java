@@ -21,14 +21,19 @@ public class FolderGenerator {
 
     private final Logger log = Logger.getLogger(FolderGenerator.class.getName());
     private final Dotenv dotenv = Dotenv.load();
+    private String rootLocation;
+    private JSONObject courseSettings;
     private JSONObject settings;
 
     public boolean create(String courseType, String courseDate, ObservableList<String> candidates) {
-
         try {
-            JSONObject object = (JSONObject) new JSONParser().parse(
-                    new FileReader(System.getProperty("user.dir") + Utils.parseFilePath(dotenv.get("SETTINGS_PATH"))));
-            settings = (JSONObject) object.get(courseType);
+            FileReader reader = new FileReader(
+                    System.getProperty("user.dir") + Utils.parseFilePath(dotenv.get("SETTINGS_PATH")));
+            settings = (JSONObject) new JSONParser().parse(reader);
+            reader.close();
+            courseSettings = (JSONObject) settings.get(courseType);
+            if (rootLocation == null)
+                rootLocation = Utils.parseFilePath(settings.get("ROOT_PATH").toString());
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -44,10 +49,32 @@ public class FolderGenerator {
         return true;
     }
 
+    public FolderGenerator overrideRootLocation(String overriddenPath) {
+        rootLocation = Utils.parseFilePath(overriddenPath);
+        log.log(Level.INFO, "Root file location has been overridden to: " + rootLocation
+                + ". This may make the application unstable.");
+        MainPageController.log("Root file location has been overridden to: " + rootLocation
+                + ". This may make the application unstable.");
+
+        return this;
+    }
+
+    public void deleteOnExit() {
+        deleteStructureOnExit(new File(rootLocation));
+    }
+
+    private void deleteStructureOnExit(File files) {
+        for (File file : files.listFiles()) {
+            if (file.isDirectory())
+                deleteStructureOnExit(file);
+            file.delete();
+        }
+    }
+
     private boolean errorCheckInputs(String courseType, String courseDate, ObservableList<String> candidates) {
-        if (courseType == null
-                || (!courseType.equals("Introductory & Foundation") && !courseType.equals("Instructor Course")
-                        && !courseType.equals("Re-certification") && !courseType.equals("Assessment Day"))) {
+        if (courseType == null || (!courseType.equals("Introductory & Foundation")
+                && !courseType.equals("Instructor Course") && !courseType.equals("Re-certification")
+                && !courseType.equals("Assessment Day") && !courseType.equals("test-course-title"))) {
             log.log(Level.SEVERE, "Course type not recognised: " + courseType);
             MainPageController.log("Course type not recognised: " + courseType, Color.RED);
             return false;
@@ -69,8 +96,8 @@ public class FolderGenerator {
 
     private boolean createFileStructure(String courseType, String courseDate, ObservableList<String> candidates) {
         String parsedCourseDate = Utils.parseDateValue(courseDate);
-        File source = new File(Utils.parseFilePath(dotenv.get("ROOT_PATH")) + getDateValue(parsedCourseDate, "year")
-                + File.separator + getDateValue(parsedCourseDate, "month"));
+        File source = new File(rootLocation + getDateValue(parsedCourseDate, "year") + File.separator
+                + getDateValue(parsedCourseDate, "month"));
 
         if (!source.exists()) {
             log.log(Level.INFO, "No Source Directory. Creating new Source Directory...");
@@ -134,7 +161,7 @@ public class FolderGenerator {
         }
         final Integer candidateSize = candidates.size() - skipped;
         log.log(Level.INFO, candidateSize + " new folder" + (candidateSize != 1 ? "s" : "") + " created successfully.");
-        log.log(Level.INFO, skipped + " folder " + (skipped != 1 ? "s" : "") + "skipped.");
+        log.log(Level.INFO, skipped + " folder" + (skipped != 1 ? "s" : "") + " skipped.");
         MainPageController.logLineBreak();
         MainPageController.log(
                 candidateSize + " new folder" + (candidateSize != 1 ? "s" : "") + " created successfully", Color.GREEN);
@@ -145,39 +172,39 @@ public class FolderGenerator {
     private boolean copyCandidateFiles(File candidateFile, String courseType) {
         try {
             if (getSetting("candidate record sheet")) {
-                copyFile("forms/record/General - Record Sheet.docx", candidateFile.getAbsolutePath(),
-                        candidateFile.getName() + " ~ Record Sheet" + ".docx");
+                copyFile("forms/record/General - Record Sheet", candidateFile.getAbsolutePath(),
+                        candidateFile.getName() + " ~ Record Sheet");
             }
             if (getSetting("presentation feedback")) {
-                copyFile("forms/record/" + courseType + " - Presentation Feedback.docx",
-                        candidateFile.getAbsolutePath(), candidateFile.getName() + " ~ Presentation Feedback.docx");
+                copyFile("forms/record/" + courseType + " - Presentation Feedback", candidateFile.getAbsolutePath(),
+                        candidateFile.getName() + " ~ Presentation Feedback");
                 if (courseType.equals("Instructor Course")) {
                     // add in presentation feedback day 4
                 }
             }
             if (getSetting("first course programme")) {
-                copyFile("forms/record/First Course Feedback.docx", candidateFile.getAbsolutePath(),
-                        candidateFile.getName() + " ~ First Course Feedback.docx");
+                copyFile("forms/record/First Course Feedback", candidateFile.getAbsolutePath(),
+                        candidateFile.getName() + " ~ First Course Feedback");
             }
             if (getSetting("abi three random")) {
-                copyFile("forms/record/abi" + Utils.getRandom(0, 5) + ".docx", candidateFile.getAbsolutePath(),
+                copyFile("forms/record/abi" + Utils.getRandom(0, 5), candidateFile.getAbsolutePath(),
                         "Audit-based intervention Assessment Form");
             }
             if (getSetting("abi proactive working practices")) {
-                copyFile("forms/record/General - Physical Intervention Records PWP.docx",
-                        candidateFile.getAbsolutePath(), "Audit-based Interventions PWP.docx");
+                copyFile("forms/record/General - Physical Intervention Records PWP", candidateFile.getAbsolutePath(),
+                        "Audit-based Interventions PWP");
             }
             if (getSetting("abi proactive working practices")) {
-                copyFile("forms/record/General - Physical Intervention Records KS.docx",
-                        candidateFile.getAbsolutePath(), "Audit-based Interventions KS.docx");
+                copyFile("forms/record/General - Physical Intervention Records KS", candidateFile.getAbsolutePath(),
+                        "Audit-based Interventions KS");
             }
             if (getSetting("abi proactive working practices")) {
-                copyFile("forms/record/General - Physical Intervention Records PS.docx",
-                        candidateFile.getAbsolutePath(), "Audit-based Interventions PS.docx");
+                copyFile("forms/record/General - Physical Intervention Records PS", candidateFile.getAbsolutePath(),
+                        "Audit-based Interventions PS");
             }
             if (getSetting("abi proactive working practices")) {
-                copyFile("forms/record/General - Physical Intervention Records RPS.docx",
-                        candidateFile.getAbsolutePath(), "Audit-based Interventions RPS.docx");
+                copyFile("forms/record/General - Physical Intervention Records RPS", candidateFile.getAbsolutePath(),
+                        "Audit-based Interventions RPS");
             }
 
         } catch (IOException e) {
@@ -195,15 +222,13 @@ public class FolderGenerator {
 
         try {
             if (getSetting("issues arrising form")) {
-                copyFile("forms/general/Issues Arising Form.docx", courseFile.getAbsolutePath(),
-                        "Issues Arrising Form.docx");
+                copyFile("forms/general/Issues Arising Form", courseFile.getAbsolutePath(), "Issues Arising Form");
             }
             if (getSetting("attendance sheet")) {
-                copyFile("forms/general/Attendance Sheet.docx", courseFile.getAbsolutePath(), "Attendance Sheet.docx");
+                copyFile("forms/general/Attendance Sheet", courseFile.getAbsolutePath(), "Attendance Sheet");
             }
             if (getSetting("evaluation form")) {
-                copyFile("forms/general/Evaluation Form.docx", courseFile.getAbsolutePath(),
-                        "Evaluation Collation Form.docx");
+                copyFile("forms/general/Evaluation Form", courseFile.getAbsolutePath(), "Evaluation Collation Form");
             }
             if (getSetting("presentation folder")) {
                 new File(courseFile.getAbsolutePath() + File.separator + "0. presentations").mkdirs();
@@ -218,12 +243,11 @@ public class FolderGenerator {
     }
 
     private Boolean getSetting(String setting) {
-        System.out.println(setting);
-        return Boolean.parseBoolean(settings.get(setting).toString());
+        return Boolean.parseBoolean(courseSettings.get(setting).toString());
     }
 
     private void copyFile(String source, String destination, String fileName) throws IOException {
-        FileUtils.copyURLToFile(this.getClass().getClassLoader().getResource(source),
+        FileUtils.copyURLToFile(this.getClass().getClassLoader().getResource(source + ".docx"),
                 new File(destination + File.separator + fileName + ".docx"));
     }
 
