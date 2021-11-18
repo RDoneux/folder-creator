@@ -26,7 +26,7 @@ public class FolderGeneratorTest {
     private static final String ROOT_LOCATION = System.getProperty("user.dir") + File.separator + "dump/";
 
     @BeforeAll
-    static void test() {
+    static void init() {
         folderGenerator = new FolderGenerator();
 
         RECOGNISED_CANDIDATE_LIST.add("recognised-candidate-name-one");

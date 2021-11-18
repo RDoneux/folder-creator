@@ -18,9 +18,7 @@ public class CandidateViewer {
 
     }
 
-    public void deleteCandidate(int index) {
-        // int indexToDelete = delete.getSelectionModel().getSelectedIndex();
-        delete.getSelectionModel().clearSelection(); // once index has been obtained, unselect item.
+    private void deleteCandidate(int index) {
         candidate.getItems().remove(index);
         delete.getItems().remove(index);
     }
@@ -28,8 +26,7 @@ public class CandidateViewer {
     public void deleteCandidate() {
         int indexToDelete = delete.getSelectionModel().getSelectedIndex();
         delete.getSelectionModel().clearSelection(); // once index has been obtained, unselect item.
-        candidate.getItems().remove(indexToDelete);
-        delete.getItems().remove(indexToDelete);
+        deleteCandidate(indexToDelete);
     }
 
     public void addCandidate(String candidateName) {
