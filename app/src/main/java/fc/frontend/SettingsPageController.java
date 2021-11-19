@@ -5,8 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -59,11 +59,22 @@ public class SettingsPageController {
     public CheckBox firstCourseProgrammeFeedback;
 
     @FXML
+    public TextField rootPath;
+
+    @FXML
     public ComboBox<String> courseType;
     private ObservableList<String> courses;
 
     @FXML
     public void initialize() {
+        JSONObject settings;
+        try {
+            settings = (JSONObject) new JSONParser().parse(
+                    new FileReader(System.getProperty("user.dir") + Utils.parseFilePath(dotenv.get("SETTINGS_PATH"))));
+            rootPath.setText(settings.get("ROOT_PATH").toString());
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
         courses = FXCollections.observableArrayList(dotenv.get("COURSES").split(","));
         courseType.setItems(courses);
         courseType.getSelectionModel().select(0);
@@ -73,6 +84,24 @@ public class SettingsPageController {
     @FXML
     public void handleReturnButtonPress() {
         Client.changeScene("main-page");
+    }
+
+    @FXML
+    @SuppressWarnings("unchecked")
+    public void updateRootPath() {
+        JSONObject settings;
+        try {
+            settings = (JSONObject) new JSONParser().parse(
+                    new FileReader(System.getProperty("user.dir") + Utils.parseFilePath(dotenv.get("SETTINGS_PATH"))));
+            settings.put("ROOT_PATH", rootPath.getText());
+
+            FileWriter writer = new FileWriter(
+                    System.getProperty("user.dir") + Utils.parseFilePath(dotenv.get("SETTINGS_PATH")));
+            writer.write(settings.toJSONString());
+            writer.close();
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -127,10 +156,10 @@ public class SettingsPageController {
             courseTypeJSON.put("presentation feedback", presentationFeedback.isSelected());
             courseTypeJSON.put("first course programme", firstCourseProgrammeFeedback.isSelected());
 
-            FileWriter writer = new FileWriter(System.getProperty("user.dir") + File.separator + "settings.json");
+            FileWriter writer = new FileWriter(
+                    System.getProperty("user.dir") + Utils.parseFilePath(dotenv.get("SETTINGS_PATH")));
             writer.write(jsonFile.toJSONString());
             writer.close();
-
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
