@@ -2,11 +2,15 @@ package fc.frontend;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -79,11 +83,21 @@ public class SettingsPageController {
         courseType.setItems(courses);
         courseType.getSelectionModel().select(0);
         handleCourseTypeChange();
+
     }
 
     @FXML
-    public void handleReturnButtonPress() {
-        Client.changeScene("main-page");
+    public void handleReturnButtonPress(ActionEvent event) {
+
+        DirectoryChooser fileChooser = new DirectoryChooser();
+        fileChooser.setInitialDirectory(new File(rootPath.getText()));
+
+        File chosen = fileChooser.showDialog(new Stage());
+        if (chosen != null) {
+            rootPath.setText(chosen.getAbsolutePath());
+            updateRootPath();
+        }
+
     }
 
     @FXML

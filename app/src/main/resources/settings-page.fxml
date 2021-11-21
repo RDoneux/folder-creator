@@ -156,10 +156,38 @@
             </GridPane>
          </children>
       </GridPane>
-      <Button fx:id="back" layoutX="165.0" layoutY="586.0" mnemonicParsing="false" onAction="#handleReturnButtonPress" prefHeight="30.0" prefWidth="110.0" styleClass="-fx-border-radius" text="Return" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6">
-         <font>
-            <Font size="15.0" />
-         </font></Button>
+      <GridPane GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="225.0" minWidth="10.0" prefWidth="102.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="465.0" minWidth="10.0" prefWidth="460.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="399.0" minWidth="10.0" prefWidth="137.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Button fx:id="back" mnemonicParsing="false" onAction="#handleReturnButtonPress" prefHeight="30.0" prefWidth="110.0" styleClass="-fx-border-radius" text="Select File" GridPane.columnIndex="2">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </Button>
+            <TextField fx:id="rootPath" onKeyTyped="#updateRootPath" prefHeight="30.0" GridPane.columnIndex="1" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Root Path" GridPane.halignment="LEFT">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </Text>
+         </children>
+      </GridPane>
       <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5">
          <GridPane.margin>
             <Insets left="15.0" right="15.0" />
@@ -175,18 +203,5 @@
             <Insets left="15.0" right="15.0" />
          </GridPane.margin>
       </Separator>
-      <TextField fx:id="rootPath" onKeyTyped="#updateRootPath" prefHeight="30.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin>
-      </TextField>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Root Path" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
-         <GridPane.margin>
-            <Insets right="10.0" />
-         </GridPane.margin>
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Text>
    </children>
 </GridPane>
